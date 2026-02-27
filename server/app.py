@@ -12,16 +12,20 @@ app = Flask(
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    """Render the main page and handle search requests."""
-    results = []
+    grouped_results = {}
+    total_matches = 0
+    total_files = 0
 
     if request.method == "POST":
-        keyword = request.form.get("keyword", "").strip()
+        keyword = request.form.get("keyword")
+        grouped_results, total_matches, total_files = search_in_directory(keyword)
 
-        if keyword != "":
-            results = search_in_directory(keyword)
-
-    return render_template("index.html", results=results)
+    return render_template(
+        "index.html",
+        results=grouped_results,
+        total_matches=total_matches,
+        total_files=total_files
+    )
 
 
 if __name__ == "__main__":

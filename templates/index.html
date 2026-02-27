@@ -16,14 +16,26 @@
         </form>
 
         <div class="results">
-            {% if results %}
-                <ul>
-                    {% for file, line, content in results %}
-                        <strong>• {{ file }} à la ligne n°{{ line }}</strong> <br> {{ content }} <br><br>
-                    {% endfor %}
-                </ul>
-            {% elif results is not none %}
-                <p>No match found.</p>
+            {% if total_matches > 0 %}
+                <p>
+                    {{ total_matches }} résultat(s) trouvé(s) dans {{ total_files }} fichier(s)
+                </p>
+
+                {% for filename, matches in results.items() %}
+                   <div class="file-group">
+                        <h3>{{ filename }}</h3>
+                        <ul>
+                            {% for match in matches %}
+                                <li>
+                                    <strong>Ligne {{ match.line }}</strong> :
+                                    {{ match.content }}
+                                </li>
+                           {% endfor %}
+                        </ul>
+                   </div>
+                {% endfor %}
+            {% elif request.method == "POST" %}
+                <p>Aucun résultat trouvé.</p>
             {% endif %}
         </div>
     </div>

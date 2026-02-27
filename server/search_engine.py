@@ -1,6 +1,7 @@
 """Search engine module."""
 
 import os
+from collections import defaultdict
 from config import PATH_DOCUMENTS
 from file_readers import (
     read_txt_file,
@@ -9,38 +10,59 @@ from file_readers import (
     read_pdf_file
 )
 
+SUPPORTED_READERS = {
+    ".txt": read_txt_file,
+    ".html": read_html_file,
+    ".xlsx": read_excel_file,
+    ".pdf": read_pdf_file,
+}
+
+
+def get_reader(file_path):
+    _, ext = os.path.splitext(file_path)
+    return SUPPORTED_READERS.get(ext.lower())
+
 
 def search_in_file(file_path, keyword):
-    """Search for a keyword in a file and return matches with line numbers."""
-    matches = []
+    reader = get_reader(file_path)
+    if not reader:
+        return []
 
-    if file_path.endswith(".txt"):
-        lines = read_txt_file(file_path)
-    elif file_path.endswith(".html"):
-        lines = read_html_file(file_path)
-    elif file_path.endswith(".xlsx"):
-        lines = read_excel_file(file_path)
-    elif file_path.endswith(".pdf"):
-        lines = read_pdf_file(file_path)
-    else:
-        return matches
+    try:
+        lines = reader(file_path)
+    except Exception:
+        return []
+
+    matches = []
+    keyword = keyword.lower()
+    filename = os.path.basename(file_path)
 
     for line_number, line in enumerate(lines, start=1):
-        if keyword.lower() in line.lower():
-            filename = os.path.basename(file_path)
-            matches.append((filename, line_number, line.strip()))
+        if keyword in line.lower():
+            matches.append({
+                "line": line_number,
+                "content": line.strip(),
+            })
 
-    return matches
+    return filename, matches
 
 
 def search_in_directory(keyword):
-    """Search for a keyword in all supported documents."""
-    results = []
+    if not keyword.strip():
+        return {}, 0, 0
+
+    grouped_results = defaultdict(list)
+    total_matches = 0
 
     for root, _, files in os.walk(PATH_DOCUMENTS):
         for file in files:
             file_path = os.path.join(root, file)
-            file_results = search_in_file(file_path, keyword)
-            results.extend(file_results)
+            filename, matches = search_in_file(file_path, keyword)
 
-    return results
+            if matches:
+                grouped_results[filename].extend(matches)
+                total_matches += len(matches)
+
+    total_files = len(grouped_results)
+
+    return grouped_results, total_matches, total_files
