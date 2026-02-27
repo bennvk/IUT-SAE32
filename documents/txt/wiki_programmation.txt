@@ -1,0 +1,14 @@
+La programmation informatique désigne l’ensemble des activités liées à la conception, l’écriture, le test et la maintenance de programmes informatiques à l’aide de langages de programmation. 
+Compétence centrale de l’ingénierie contemporaine, elle intervient dans le développement de logiciels, d’applications, de systèmes d’exploitation et de dispositifs numériques au cœur de tous les secteurs de la société.
+L'écriture d'un programme se fait dans un langage de programmation. 
+Un logiciel est un ensemble de programmes (qui peuvent être écrits dans des langages de programmation différents) destiné à la réalisation de certaines tâches par un (ou plusieurs) utilisateurs du logiciel.
+La programmation représente donc ici la rédaction du code source d'un logiciel. 
+On utilise plutôt le terme développement pour dénoter l'ensemble des activités liées à la création d'un logiciel et des programmes qui le composent. 
+Cela inclut la spécification du logiciel, sa conception, puis son implémentation proprement dite au sens de l'écriture des programmes dans un langage de programmation bien défini, ainsi que la vérification de sa correction, etc.
+Longtemps perçue comme un simple instrument technique, la programmation est désormais reconnue comme une pratique culturellement et socialement signifiante. 
+Elle façonne nos usages numériques, nos modes de communication et jusqu’à nos structures sociales et économiques. 
+Des chercheurs comme Lev Manovich[1] ou Shoshana Zuboff[2] ont mis en lumière le rôle structurant du logiciel dans notre culture numérique contemporaine et les rapports de pouvoir qui en émergent.
+La programmation n’est pas neutre : elle implique des choix techniques et éthiques pouvant renforcer ou atténuer des biais algorithmiques, comme l’ont montré Joy Buolamwini et Timnit Gebru dans l’étude Gender Shades[3]. 
+Elle est aussi au cœur des débats sur l’inclusion dans les métiers du numérique, documentés notamment par Mar Hicks[4] ou Janet Abbate[5].
+Enfin, elle s’inscrit dans des dynamiques sociales vivantes : communautés open source, plateformes coopératives comme GitHub, ou initiatives éducatives visant à démocratiser l’apprentissage du code. 
+L’anthropologue Gabriella Coleman[6] y voit une éthique du partage et de la liberté façonnée par les développeurs eux-mêmes. 
