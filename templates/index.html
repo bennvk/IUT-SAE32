@@ -27,8 +27,13 @@
                         <ul>
                             {% for match in matches %}
                                 <li>
-                                    <strong>Ligne {{ match.line }}</strong> :
-                                    {{ match.content }}
+                                    <strong>
+                                        Ligne {{ match.line }}
+                                        {% if match.column is defined %}
+                                            - Colonne {{ match.column }}
+                                        {% endif %}
+                                    </strong>
+                                    : {{ match.content }}
                                 </li>
                            {% endfor %}
                         </ul>
