@@ -13,20 +13,26 @@ def read_txt_file(file_path):
 
 
 def read_html_file(file_path):
-    """Return visible text lines from an HTML file."""
-    with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
-        soup = BeautifulSoup(file.read(), "html.parser")
+    """
+    Extract visible text from an HTML file and return it as a list of clean lines.
+    Ignores scripts, styles, noscript, and comments.
+    """
+    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+        soup = BeautifulSoup(f, "html.parser")
 
+    # Supprimer les balises non visibles
     for tag in soup(["script", "style", "noscript"]):
         tag.decompose()
 
-    text = soup.get_text()
+    # Supprimer les commentaires
+    for comment in soup.find_all(string=lambda text: isinstance(text, type(soup.Comment))):
+        comment.extract()
 
-    lines = []
-    for line in text.splitlines():
-        clean = line.strip()
-        if clean:
-            lines.append(clean)
+    # Récupérer tout le texte visible
+    text = soup.get_text(separator="\n")  # Utiliser "\n" pour séparer les blocs
+
+    # Nettoyer et filtrer les lignes vides
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
 
     return lines
 
