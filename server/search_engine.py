@@ -1,4 +1,4 @@
-"""Search engine module."""
+"""Search engine module for searching keywords in various file types."""
 
 import os
 from collections import defaultdict
@@ -10,6 +10,7 @@ from file_readers import (
     read_pdf_file
 )
 
+# Map file extensions to their respective reader functions
 SUPPORTED_READERS = {
     ".txt": read_txt_file,
     ".html": read_html_file,
@@ -19,17 +20,24 @@ SUPPORTED_READERS = {
 
 
 def get_reader(file_path):
+    """
+    Return the reader function based on the file extension.
+    Returns None if the file type is not supported.
+    """
     _, ext = os.path.splitext(file_path)
     return SUPPORTED_READERS.get(ext.lower())
 
 
 def search_in_file(file_path, keyword):
+    """Search for a keyword inside a single file."""
     reader = get_reader(file_path)
     filename = os.path.basename(file_path)
 
+    # Skip unsupported file types
     if not reader:
         return filename, []
 
+    # Try reading the file
     try:
         data = reader(file_path)
     except Exception:
@@ -38,7 +46,7 @@ def search_in_file(file_path, keyword):
     matches = []
     keyword = keyword.lower()
 
-    # CAS EXCEL
+    # Excel files
     if file_path.endswith(".xlsx"):
         for cell in data:
             if keyword in cell["content"].lower():
@@ -49,7 +57,7 @@ def search_in_file(file_path, keyword):
                 })
         return filename, matches
 
-    # CAS TXT / HTML / PDF
+    # TXT, HTML, PDF
     for line_number, line in enumerate(data, start=1):
         if keyword in line.lower():
             matches.append({
@@ -61,12 +69,21 @@ def search_in_file(file_path, keyword):
 
 
 def search_in_directory(keyword):
+    """
+    Search for a keyword in all supported files within the documents directory.
+    
+    Returns:
+        grouped_results (dict): mapping filename -> list of matches
+        total_matches (int): total number of keyword occurrences
+        total_files (int): number of files containing the keyword
+    """
     if not keyword.strip():
         return {}, 0, 0
 
     grouped_results = defaultdict(list)
     total_matches = 0
 
+    # Walk through all files in the documents directory
     for root, _, files in os.walk(PATH_DOCUMENTS):
         for file in files:
             file_path = os.path.join(root, file)

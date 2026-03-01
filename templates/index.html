@@ -8,17 +8,16 @@
 <body>
 
     <div class="container">
-
         <h1>SAE3.02</h1>
 
         <form method="POST">
-            <input type="text" name="keyword" placeholder="Rechercher un terme..." required>
+            <input type="text" name="keyword" placeholder="Search a term..." required>
         </form>
 
         <div class="results">
             {% if total_matches > 0 %}
                 <p>
-                    {{ total_matches }} résultat(s) trouvé(s) dans {{ total_files }} fichier(s)
+                    {{ total_matches }} result(s) found in {{ total_files }} file(s)
                 </p>
 
                 {% for filename, matches in results.items() %}
@@ -28,9 +27,9 @@
                             {% for match in matches %}
                                 <li>
                                     <strong>
-                                        Ligne {{ match.line }}
+                                        Line {{ match.line }}
                                         {% if match.column is defined %}
-                                            - Colonne {{ match.column }}
+                                            - Column {{ match.column }}
                                         {% endif %}
                                     </strong>
                                     : {{ match.content }}
@@ -40,7 +39,7 @@
                    </div>
                 {% endfor %}
             {% elif request.method == "POST" %}
-                <p>Aucun résultat trouvé.</p>
+                <p>No results found.</p>
             {% endif %}
         </div>
     </div>

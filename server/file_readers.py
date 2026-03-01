@@ -1,4 +1,4 @@
-"""File reading fonctions for txt, html, excel and pdf files"""
+"""File reading functions for txt, html, excel, and pdf files."""
 
 import os
 import pandas as pd
@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 def read_txt_file(file_path):
     """Return a list of lines from a TXT file."""
+    # Open the text file and read all lines
     with open(file_path, "r", encoding="utf-8") as file:
         return file.readlines()
 
@@ -15,30 +16,30 @@ def read_txt_file(file_path):
 def read_html_file(file_path):
     """
     Extract visible text from an HTML file and return it as a list of clean lines.
-    Ignores scripts, styles, noscript, and comments.
     """
     with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
         soup = BeautifulSoup(f, "html.parser")
 
-    # Supprimer les balises non visibles
+    # Remove non-visible text (css and js)
     for tag in soup(["script", "style", "noscript"]):
         tag.decompose()
 
-    # Supprimer les commentaires
+    # Remove comments
     for comment in soup.find_all(string=lambda text: isinstance(text, type(soup.Comment))):
         comment.extract()
 
-    # Récupérer tout le texte visible
-    text = soup.get_text(separator="\n")  # Utiliser "\n" pour séparer les blocs
+    # Get all visible text separated by newlines
+    text = soup.get_text(separator="\n")
 
-    # Nettoyer et filtrer les lignes vides
+    # Clean lines and remove empty ones
     lines = [line.strip() for line in text.splitlines() if line.strip()]
 
     return lines
 
 
 def read_excel_file(file_path):
-    """Return structured data from Excel file."""
+    """Return structured data from an Excel file as a list of dictionaries."""
+    # Read all sheets
     sheets = pd.read_excel(file_path, sheet_name=None, engine="openpyxl")
     data = []
 
@@ -46,8 +47,9 @@ def read_excel_file(file_path):
         for row_index, row in dataframe.iterrows():
             for col_index, cell in enumerate(row):
                 if pd.notna(cell):
+                    # Put row + column + content in a data variable
                     data.append({
-                        "row": row_index + 2,      # +2 car Excel commence à 1 + header
+                        "row": row_index + 2,
                         "column": col_index + 1,
                         "content": str(cell)
                     })
@@ -59,11 +61,12 @@ def read_pdf_file(file_path):
     """Return a list of text lines extracted from a PDF file."""
     lines = []
 
+    # Open PDF and extract text page by page
     with pdfplumber.open(file_path) as pdf:
         for page in pdf.pages:
             text = page.extract_text()
             if text:
-                # splitlines() conserve les vraies lignes reconstruites
+                # Keep real lines using splitlines for better lines readings
                 lines.extend(text.splitlines())
 
     return lines
