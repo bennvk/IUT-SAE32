@@ -25,19 +25,32 @@ def get_reader(file_path):
 
 def search_in_file(file_path, keyword):
     reader = get_reader(file_path)
+    filename = os.path.basename(file_path)
+
     if not reader:
-        return []
+        return filename, []
 
     try:
-        lines = reader(file_path)
+        data = reader(file_path)
     except Exception:
-        return []
+        return filename, []
 
     matches = []
     keyword = keyword.lower()
-    filename = os.path.basename(file_path)
 
-    for line_number, line in enumerate(lines, start=1):
+    # CAS EXCEL
+    if file_path.endswith(".xlsx"):
+        for cell in data:
+            if keyword in cell["content"].lower():
+                matches.append({
+                    "line": cell["row"],
+                    "column": cell["column"],
+                    "content": cell["content"]
+                })
+        return filename, matches
+
+    # CAS TXT / HTML / PDF
+    for line_number, line in enumerate(data, start=1):
         if keyword in line.lower():
             matches.append({
                 "line": line_number,
